@@ -47,3 +47,10 @@ window.RUN8_WHIRL = function(system) {
         whirl: root >= 5 ? "WHIRL‑Zug ausgeführt" : "WHIRL‑Zug nicht aktiv"
     };
 };
+// sqrt.room
+window.SQRT_ROOM = {
+    active: true,
+    root() {
+        return Math.sqrt( ID_UNIT.level + 1 );
+    }
+};
