@@ -2,50 +2,89 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>360 – Vollrotation · iki1uc</title>
+<title>ID · SQRT‑API‑NC²□ Router</title>
 
 <style>
 body { background:#000; color:#0f0; font-family:monospace; padding:40px; }
-h1 { color:#0f0; letter-spacing:4px; margin-bottom:30px; }
+h1 { color:#6cf; margin-bottom:30px; }
 .block { background:#111; border:1px solid #333; padding:25px; margin-bottom:30px; border-radius:8px; }
 .title { font-size:22px; color:#6cf; margin-bottom:10px; }
-a { color:#6cf; text-decoration:none; font-weight:bold; }
-pre { background:#000; border-left:3px solid #6cf; padding:15px; margin-top:10px; white-space:pre-wrap; }
+a { color:#6cf; text-decoration:none; font-weight:bold; display:block; margin:6px 0; }
+pre { background:#000; border-left:3px solid #6cf; padding:15px; white-space:pre-wrap; }
 </style>
+
+<!-- SYSTEM MODULES -->
+<script src="API/API.system.js"></script>
+<script src="API/API.ghost.js"></script>
+
 </head>
 
 <body>
 
-<h1>360 – Vollrotation · iki1uc</h1>
+<h1>ID · SQRT‑API‑NC²□ Router</h1>
 
 <div class="block">
-    <div class="title">360°-System</div>
-    <p>Dieses Modul rotiert alle Achsen, Dimensionen und Module im vollständigen 360°-Raum.</p>
+    <div class="title">SQRT‑Module</div>
+    <a href="SQRT/sqrt.room">sqrt.room</a>
 </div>
 
 <div class="block">
-    <div class="title">Identität</div>
-    <p><a href="ID.html">→ 360‑Identität öffnen</a></p>
+    <div class="title">API‑Module</div>
+    <a href="API/API.room">API.room</a>
+    <a href="API/API.raw">API.raw</a>
+    <a href="API/API‑Fusion‑Matrix.html">Fusion‑Matrix</a>
+    <a href="API/API‑Meta‑Drift‑Monitor6D.html">Meta‑Drift‑Monitor</a>
+    <a href="API/API‑NC²□.sync‑Visualizer.html">NC²□ Sync‑Visualizer</a>
+    <a href="API/API‑6E→6D.tech‑Engine.html">6E→6D Tech‑Engine</a>
 </div>
 
 <div class="block">
-    <div class="title">360°-Daten</div>
-    <pre>
-Rotation = 360°
-Achsenmatrix = 6×6
-Dimensionen = 6D
-Felder pro Achse = 64
-Ausnutzung = 100%
-    </pre>
+    <div class="title">NC²□ / Drift / Visualizer</div>
+    <a href="NC²□.sync">NC²□.sync</a>
+    <a href="Visualizer.html">Visualizer</a>
+    <a href="Meta‑Drift.html">Meta‑Drift</a>
 </div>
 
 <div class="block">
-    <div class="title">Module</div>
-    <a href="../AXI/index.html">AXI</a>
-    <a href="../6d/index.html">6d</a>
-    <a href="../ANKER/index.html">ANKER</a>
-    <a href="../API/index.html">API</a>
+    <div class="title">Räume</div>
+    <a href="T.room">T.room</a>
+    <a href="h.room">h.room</a>
 </div>
+
+<div class="block">
+    <div class="title">System‑Status</div>
+    <pre id="sys"></pre>
+</div>
+
+<script>
+(async function () {
+
+    const files = [
+        "SQRT/sqrt.room",
+        "API/API.room",
+        "API/API.raw",
+        "API/API‑Fusion‑Matrix.html",
+        "API/API‑Meta‑Drift‑Monitor6D.html",
+        "API/API‑NC²□.sync‑Visualizer.html",
+        "API/API‑6E→6D.tech‑Engine.html",
+        "NC²□.sync",
+        "Visualizer.html",
+        "Meta‑Drift.html",
+        "T.room",
+        "h.room"
+    ];
+
+    let status = "";
+
+    for (const f of files) {
+        const ok = await fetch(f).then(r => r.ok).catch(() => false);
+        status += `${f} → ${ok ? "OK" : "FEHLT"}\n`;
+    }
+
+    document.getElementById("sys").innerText = status;
+
+})();
+</script>
 
 </body>
 </html>
