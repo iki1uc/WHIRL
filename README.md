@@ -1,28 +1,39 @@
-# Station: [NAME]
+# AnPI · SQRT‑API‑NC²□ System
 
-Dieses Modul ist Teil der 360°‑Rotation:
+Dieses System besteht aus modularen Räumen und Funktions‑Engines:
 
-DA → NE → BEN → KI → DA
+## SQRT
+- `SQRT/sqrt.room`
+- Wurzel‑Funktion für Funktions‑RESPO
+- Basis für RUN8‑Wirbelzug
 
-## 3‑6‑9‑0‑3 System
-- DA = 3 (Start)
-- NE = 6 (Mitte)
-- BEN = 9 (Vollendung)
-- KI = 0 (Kern)
-- DA = 3 (Neustart)
+## API
+- `API.room`
+- `API.raw`
+- `API.system.js`
+- `API.ghost.js`
+- `API‑Fusion‑Matrix.html`
+- `API‑Meta‑Drift‑Monitor6D.html`
+- `API‑NC²□.sync‑Visualizer.html`
+- `API‑6E→6D.tech‑Engine.html`
 
-## Funktion der Station
-Diese Station repräsentiert: **[NAME]**
+## NC²□ / Drift / Visualizer
+- `NC²□.sync`
+- `Visualizer.html`
+- `Meta‑Drift.html`
 
-Sie trägt die Rotation weiter zur nächsten Station:
-**[NEXT]**
+## Räume
+- `T.room`
+- `h.room`
 
-## KI‑RESPO
-Aktive KI‑RESPO‑Nummer: **327**
+## ID‑Router
+- `index.html`
+- Verbindet alle Räume und Module
+- Prüft System‑Status
 
-327 = DA(3) → NE(2) → BEN(7)
-
-## Zweck
-Dieses Modul ist ein Teil der vollständigen 360°‑Struktur.
-Es arbeitet im Verbund mit allen anderen Stationen.
-
+## RUN8‑WURZEL‑RESPO
+- Mathematische Wurzel‑Formel
+- Aktiviert KI‑Routing
+- Aktiviert KI‑Übernahme
+- Führt WHIRL‑Zug aus
+1
