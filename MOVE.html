@@ -1,52 +1,73 @@
-// === ERROR SCAN ===
-let errors = [];
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>MOVE · NC · ORT · HOME · Delta · Stabil · RESPO</title>
 
-function checkModule(name, condition){
-    if(!condition){
-        errors.push(`FEHLER: Modul ${name} ist nicht aktiv oder defekt`);
-    }
+<style>
+body { background:#000; color:#0f0; font-family:monospace; padding:40px; }
+
+.idline {
+    background:#111;
+    color:#6cf;
+    font-family:monospace;
+    padding:10px 15px;
+    border-left:4px solid #6cf;
+    margin-bottom:25px;
+}
+.idline .name {
+    font-weight:bold;
+    display:block;
+}
+.idline .file {
+    color:#0f0;
+    font-size:14px;
 }
 
-// API
-checkModule("API.system.js", typeof API !== "undefined" && API.system);
+pre { background:#111; padding:20px; border-left:3px solid #6cf; }
+</style>
 
-// NC²□
-checkModule("NC²□.sync", typeof NC2 !== "undefined");
+<script src="NC.core.js"></script>
+<script src="Matrix.core.js"></script>
+<script src="ORT.core.js"></script>
+<script src="HOME.core.js"></script>
+<script src="Delta.core.js"></script>
+<script src="Stabil.core.js"></script>
+<script src="RESPO.core.js"></script>
 
-// SQRT
-checkModule("SQRT", typeof SQRT !== "undefined");
+</head>
+<body>
 
-// SQRT_ROOM
-checkModule("SQRT_ROOM", typeof SQRT_ROOM !== "undefined");
+<div class="idline">
+    <span class="name">MOVE · RUN · EDIT · VERIFY · SCAN · DELTA · NC · SQRT · RESPO</span>
+    <span class="file">FILE: move.html</span>
+</div>
 
-// RUN8_WHIRL
-checkModule("RUN8_WHIRL", typeof RUN8_WHIRL !== "undefined");
+<h1>MOVE · NC‑System · Lage‑Engine</h1>
+<pre id="out"></pre>
 
-// ID_UNIT
-checkModule("ID_UNIT", typeof ID_UNIT !== "undefined");
+<script>
+// Dein MOVE‑Code bleibt unverändert
+NC.load("tmp.po.raer.tmp");
+NC.load("operator.tmp");
+NC.load("ai.farb.map.tmp");
+NC.load("golden.core.tmp");
 
-// Ghost
-checkModule("GHOST", typeof GHOST !== "undefined");
+NC.load("ort.home.tmp");
+NC.load("home.ort.tmp");
 
-// Leere Dateien
-const emptyFiles = [
-    "6E → 6D.tech",
-    "6E→6D.tech",
-    "NC²□.sync",
-    "API.raw",
-    "T.room",
-    "h.room"
-];
+Matrix.init(9, 9);
 
-for(const ef of emptyFiles){
-    const res = await fetch(ef).then(r => r.text()).catch(() => "");
-    if(res.trim().length === 0){
-        errors.push(`LEER: ${ef} hat keinen Inhalt`);
-    }
-}
+ORT.scan("ort.home.tmp");
+HOME.center("home.ort.tmp");
 
-// Ausgabe
-status += "\n=== ERROR SCAN ===\n";
-status += errors.length === 0
-    ? "Keine Fehler gefunden"
-    : errors.join("\n");
+Delta.compute(ORT.value, HOME.value);
+Stabil.compute(Delta.value, HOME.phi);
+
+RESPO.lage("ort.home.tmp");
+
+document.getElementById("out").innerText = "MOVE ausgeführt ✓";
+</script>
+
+</body>
+</html>
