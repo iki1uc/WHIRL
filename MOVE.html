@@ -1,0 +1,52 @@
+// === ERROR SCAN ===
+let errors = [];
+
+function checkModule(name, condition){
+    if(!condition){
+        errors.push(`FEHLER: Modul ${name} ist nicht aktiv oder defekt`);
+    }
+}
+
+// API
+checkModule("API.system.js", typeof API !== "undefined" && API.system);
+
+// NC²□
+checkModule("NC²□.sync", typeof NC2 !== "undefined");
+
+// SQRT
+checkModule("SQRT", typeof SQRT !== "undefined");
+
+// SQRT_ROOM
+checkModule("SQRT_ROOM", typeof SQRT_ROOM !== "undefined");
+
+// RUN8_WHIRL
+checkModule("RUN8_WHIRL", typeof RUN8_WHIRL !== "undefined");
+
+// ID_UNIT
+checkModule("ID_UNIT", typeof ID_UNIT !== "undefined");
+
+// Ghost
+checkModule("GHOST", typeof GHOST !== "undefined");
+
+// Leere Dateien
+const emptyFiles = [
+    "6E → 6D.tech",
+    "6E→6D.tech",
+    "NC²□.sync",
+    "API.raw",
+    "T.room",
+    "h.room"
+];
+
+for(const ef of emptyFiles){
+    const res = await fetch(ef).then(r => r.text()).catch(() => "");
+    if(res.trim().length === 0){
+        errors.push(`LEER: ${ef} hat keinen Inhalt`);
+    }
+}
+
+// Ausgabe
+status += "\n=== ERROR SCAN ===\n";
+status += errors.length === 0
+    ? "Keine Fehler gefunden"
+    : errors.join("\n");
