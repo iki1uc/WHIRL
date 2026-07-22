@@ -2,81 +2,109 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>ID · SQRT‑API‑NC²□ Router · EXTENDED</title>
+<title>MOVE · NC · ORT · HOME · Delta · Stabil · RESPO</title>
 
 <style>
 body { background:#000; color:#0f0; font-family:monospace; padding:40px; }
 h1 { color:#6cf; margin-bottom:30px; }
-.block { background:#111; border:1px solid #333; padding:25px; margin-bottom:30px; border-radius:8px; }
-.title { font-size:22px; color:#6cf; margin-bottom:10px; }
-a { color:#6cf; text-decoration:none; font-weight:bold; display:block; margin:6px 0; }
-pre { background:#000; border-left:3px solid #6cf; padding:15px; white-space:pre-wrap; }
+pre { background:#111; padding:20px; border-left:3px solid #6cf; white-space:pre-wrap; }
+.block { background:#111; padding:20px; margin-bottom:30px; border-radius:8px; border:1px solid #333; }
+.title { color:#6cf; font-size:22px; margin-bottom:10px; }
 </style>
 
-<!-- SYSTEM MODULES -->
-<script src="API/API.system.js"></script>
-<script src="API/API.ghost.js"></script>
-<script src="NC²□.sync"></script>
-<script src="SQRT/sqrt.room"></script>
-<script src="API/API.room"></script>
-<script src="API/API.raw"></script>
-<script src="API/API-6E→6D.tech-Engine.html"></script>
+<!-- MOVE SYSTEM MODULES -->
+<script src="NC.core.js"></script>
+<script src="Matrix.core.js"></script>
+<script src="ORT.core.js"></script>
+<script src="HOME.core.js"></script>
+<script src="Delta.core.js"></script>
+<script src="Stabil.core.js"></script>
+<script src="RESPO.core.js"></script>
 
 </head>
 
 <body>
 
-<h1>ID · SQRT‑API‑NC²□ Router · EXTENDED</h1>
+<h1>MOVE · NC‑System · Lage‑Engine</h1>
 
 <div class="block">
-    <div class="title">System‑Status</div>
-    <pre id="sys"></pre>
+    <div class="title">MOVE‑Status</div>
+    <pre id="moveStatus">Lade MOVE‑System…</pre>
 </div>
 
 <script>
-(async function () {
+(async function(){
 
+    // Dateien, die move.html braucht
     const files = [
-        "SQRT/sqrt.room",
-        "API/API.room",
-        "API/API.raw",
-        "API/API‑Fusion‑Matrix.html",
-        "API/API‑Meta‑Drift‑Monitor6D.html",
-        "API/API‑NC²□.sync‑Visualizer.html",
-        "API/API‑6E→6D.tech‑Engine.html",
-        "NC²□.sync",
-        "Visualizer.html",
-        "Meta‑Drift.html",
-        "T.room",
-        "h.room"
+        "tmp.po.raer.tmp",
+        "operator.tmp",
+        "ai.farb.map.tmp",
+        "golden.core.tmp",
+        "ort.home.tmp",
+        "home.ort.tmp"
     ];
 
     let status = "=== FILE CHECK ===\n";
 
-    for (const f of files) {
+    // Prüfen ob Dateien existieren
+    for(const f of files){
         const ok = await fetch(f).then(r => r.ok).catch(() => false);
         status += `${f} → ${ok ? "OK" : "FEHLT"}\n`;
     }
 
-    // API-System
-    const apiStatus = API.system ? "API.system.js → OK" : "API.system.js → FEHLT";
+    // Prüfen ob Module existieren
+    status += "\n=== MODULE CHECK ===\n";
 
-    // NC²□ Sync
-    const ncStatus = typeof NC2 !== "undefined" ? "NC²□.sync → OK" : "NC²□.sync → FEHLT";
+    status += typeof NC !== "undefined"     ? "NC → OK\n"     : "NC → FEHLT\n";
+    status += typeof Matrix !== "undefined" ? "Matrix → OK\n" : "Matrix → FEHLT\n";
+    status += typeof ORT !== "undefined"    ? "ORT → OK\n"    : "ORT → FEHLT\n";
+    status += typeof HOME !== "undefined"   ? "HOME → OK\n"   : "HOME → FEHLT\n";
+    status += typeof Delta !== "undefined"  ? "Delta → OK\n"  : "Delta → FEHLT\n";
+    status += typeof Stabil !== "undefined" ? "Stabil → OK\n" : "Stabil → FEHLT\n";
+    status += typeof RESPO !== "undefined"  ? "RESPO → OK\n"  : "RESPO → FEHLT\n";
 
-    // SQRT
-    const sqrtStatus = typeof SQRT !== "undefined" ? "SQRT → OK" : "SQRT → FEHLT";
+    // Wenn alles OK ist → MOVE ausführen
+    status += "\n=== MOVE EXECUTION ===\n";
 
-    // Ghost
-    const ghostStatus = typeof GHOST !== "undefined" ? GHOST.status() : "Ghost → FEHLT";
+    try {
 
-    status += "\n=== MODULE STATUS ===\n";
-    status += apiStatus + "\n";
-    status += ncStatus + "\n";
-    status += sqrtStatus + "\n";
-    status += "Ghost → " + ghostStatus + "\n";
+        // 1. NC Kern laden
+        NC.load("tmp.po.raer.tmp");
+        NC.load("operator.tmp");
+        NC.load("ai.farb.map.tmp");
+        NC.load("golden.core.tmp");
 
-    document.getElementById("sys").innerText = status;
+        // 2. Lage-Module laden
+        NC.load("ort.home.tmp");
+        NC.load("home.ort.tmp");
+
+        // 3. Matrix erzeugen
+        Matrix.init(9, 9);
+
+        // 4. ORT aktivieren
+        ORT.scan("ort.home.tmp");
+
+        // 5. HOME aktivieren
+        HOME.center("home.ort.tmp");
+
+        // 6. Delta berechnen
+        Delta.compute(ORT.value, HOME.value);
+
+        // 7. Stabilität berechnen
+        Stabil.compute(Delta.value, HOME.phi);
+
+        // 8. RESPO Lage ableiten
+        RESPO.lage("ort.home.tmp");
+
+        status += "MOVE → erfolgreich ausgeführt ✓\n";
+
+    } catch(e){
+        status += "MOVE → FEHLER ✗\n";
+        status += e.toString() + "\n";
+    }
+
+    document.getElementById("moveStatus").innerText = status;
 
 })();
 </script>
