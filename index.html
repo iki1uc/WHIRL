@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>MOVE · NC · ORT · HOME · Delta · Stabil · RESPO</title>
+<title>MASTER · NC²□ · API · SQRT · WHIRL · RESPO · 81</title>
 
 <style>
 body { background:#000; color:#0f0; font-family:monospace; padding:40px; }
@@ -12,7 +12,7 @@ pre { background:#111; padding:20px; border-left:3px solid #6cf; white-space:pre
 .title { color:#6cf; font-size:22px; margin-bottom:10px; }
 </style>
 
-<!-- MOVE SYSTEM MODULES -->
+<!-- CORE MODULES -->
 <script src="NC.core.js"></script>
 <script src="Matrix.core.js"></script>
 <script src="ORT.core.js"></script>
@@ -21,90 +21,116 @@ pre { background:#111; padding:20px; border-left:3px solid #6cf; white-space:pre
 <script src="Stabil.core.js"></script>
 <script src="RESPO.core.js"></script>
 
+<!-- API / SQRT / DRIFT / VISUALIZER -->
+<script src="API.system.js"></script>
+<script src="API.ghost.js"></script>
+<script src="ID_UNIT.js"></script>
+<script src="SQRT/sqrt.room"></script>
+
 </head>
 
 <body>
 
-<h1>MOVE · NC‑System · Lage‑Engine</h1>
+<h1>MASTER · NC²□ · API · SQRT · WHIRL · RESPO · 81</h1>
 
 <div class="block">
-    <div class="title">MOVE‑Status</div>
-    <pre id="moveStatus">Lade MOVE‑System…</pre>
+    <div class="title">System‑Status</div>
+    <pre id="masterStatus">Lade MASTER‑System…</pre>
 </div>
 
 <script>
 (async function(){
 
-    // Dateien, die move.html braucht
     const files = [
         "tmp.po.raer.tmp",
         "operator.tmp",
         "ai.farb.map.tmp",
         "golden.core.tmp",
         "ort.home.tmp",
-        "home.ort.tmp"
+        "home.ort.tmp",
+        "NC²□.sync",
+        "Visualizer.html",
+        "Meta-Drift.html",
+        "API.raw",
+        "API.room",
+        "API-6E→6D.tech-Engine.html",
+        "API-Fusion-Matrix.html",
+        "API-Meta-Drift-Monitor6D.html",
+        "API-NC²□.sync-Visualizer.html",
+        "sqrt.room",
+        "WHIRL.json",
+        "REAL.json"
     ];
 
     let status = "=== FILE CHECK ===\n";
 
-    // Prüfen ob Dateien existieren
     for(const f of files){
         const ok = await fetch(f).then(r => r.ok).catch(() => false);
         status += `${f} → ${ok ? "OK" : "FEHLT"}\n`;
     }
 
-    // Prüfen ob Module existieren
     status += "\n=== MODULE CHECK ===\n";
 
-    status += typeof NC !== "undefined"     ? "NC → OK\n"     : "NC → FEHLT\n";
-    status += typeof Matrix !== "undefined" ? "Matrix → OK\n" : "Matrix → FEHLT\n";
-    status += typeof ORT !== "undefined"    ? "ORT → OK\n"    : "ORT → FEHLT\n";
-    status += typeof HOME !== "undefined"   ? "HOME → OK\n"   : "HOME → FEHLT\n";
-    status += typeof Delta !== "undefined"  ? "Delta → OK\n"  : "Delta → FEHLT\n";
-    status += typeof Stabil !== "undefined" ? "Stabil → OK\n" : "Stabil → FEHLT\n";
-    status += typeof RESPO !== "undefined"  ? "RESPO → OK\n"  : "RESPO → FEHLT\n";
+    const modules = {
+        "NC": NC,
+        "Matrix": Matrix,
+        "ORT": ORT,
+        "HOME": HOME,
+        "Delta": Delta,
+        "Stabil": Stabil,
+        "RESPO": RESPO,
+        "API": API,
+        "SQRT": SQRT
+    };
 
-    // Wenn alles OK ist → MOVE ausführen
-    status += "\n=== MOVE EXECUTION ===\n";
+    for(const m in modules){
+        status += `${m} → ${typeof modules[m] !== "undefined" ? "OK" : "FEHLT"}\n`;
+    }
+
+    status += "\n=== MASTER EXECUTION ===\n";
 
     try {
 
-        // 1. NC Kern laden
+        // NC Kern
         NC.load("tmp.po.raer.tmp");
         NC.load("operator.tmp");
         NC.load("ai.farb.map.tmp");
         NC.load("golden.core.tmp");
 
-        // 2. Lage-Module laden
+        // Lage
         NC.load("ort.home.tmp");
         NC.load("home.ort.tmp");
 
-        // 3. Matrix erzeugen
+        // Matrix
         Matrix.init(9, 9);
 
-        // 4. ORT aktivieren
+        // ORT / HOME
         ORT.scan("ort.home.tmp");
-
-        // 5. HOME aktivieren
         HOME.center("home.ort.tmp");
 
-        // 6. Delta berechnen
+        // Delta / Stabil
         Delta.compute(ORT.value, HOME.value);
-
-        // 7. Stabilität berechnen
         Stabil.compute(Delta.value, HOME.phi);
 
-        // 8. RESPO Lage ableiten
+        // RESPO
         RESPO.lage("ort.home.tmp");
 
-        status += "MOVE → erfolgreich ausgeführt ✓\n";
+        // API Engines
+        API.load("API.raw");
+        API.load("API.room");
+        API.load("API.system.js");
+
+        // SQRT / RUN8
+        SQRT.run("sqrt.room");
+
+        status += "MASTER → erfolgreich ausgeführt ✓\n";
 
     } catch(e){
-        status += "MOVE → FEHLER ✗\n";
+        status += "MASTER → FEHLER ✗\n";
         status += e.toString() + "\n";
     }
 
-    document.getElementById("moveStatus").innerText = status;
+    document.getElementById("masterStatus").innerText = status;
 
 })();
 </script>
