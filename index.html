@@ -2,137 +2,78 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>MASTER · NC²□ · API · SQRT · WHIRL · RESPO · 81</title>
+<title>WHIRL · NC²□ · GEO‑ID · 81‑Vektor</title>
 
 <style>
 body { background:#000; color:#0f0; font-family:monospace; padding:40px; }
 h1 { color:#6cf; margin-bottom:30px; }
-pre { background:#111; padding:20px; border-left:3px solid #6cf; white-space:pre-wrap; }
-.block { background:#111; padding:20px; margin-bottom:30px; border-radius:8px; border:1px solid #333; }
-.title { color:#6cf; font-size:22px; margin-bottom:10px; }
+
+#geo {
+    width: 360px;
+    height: 360px;
+    margin: 40px auto;
+    border: 3px solid #6cf;
+    border-radius: 50%;
+    position: relative;
+    animation: spin 9s linear infinite;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    background:#0f0;
+    border-radius:50%;
+    position:absolute;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+pre {
+    background:#111;
+    padding:20px;
+    border-left:3px solid #6cf;
+    white-space:pre-wrap;
+}
 </style>
-
-<!-- CORE MODULES -->
-<script src="NC.core.js"></script>
-<script src="Matrix.core.js"></script>
-<script src="ORT.core.js"></script>
-<script src="HOME.core.js"></script>
-<script src="Delta.core.js"></script>
-<script src="Stabil.core.js"></script>
-<script src="RESPO.core.js"></script>
-
-<!-- API / SQRT / DRIFT / VISUALIZER -->
-<script src="API.system.js"></script>
-<script src="API.ghost.js"></script>
-<script src="ID_UNIT.js"></script>
-<script src="SQRT/sqrt.room"></script>
 
 </head>
 
 <body>
 
-<h1>MASTER · NC²□ · API · SQRT · WHIRL · RESPO · 81</h1>
+<h1>WHIRL · GEO‑ID · 81‑Vektor‑Rotation</h1>
 
-<div class="block">
-    <div class="title">System‑Status</div>
-    <pre id="masterStatus">Lade MASTER‑System…</pre>
-</div>
+<div id="geo"></div>
+
+<pre>
+GEO‑ID: WHIRL‑Vektor
+Form: 9×9 Rotation
+Felder: 81
+Typ: NC²□ Drift‑Geometrie
+Funktion: Erkennungs‑Bewegung / ID‑Stempel
+</pre>
 
 <script>
-(async function(){
+// WHIRL als Vektor (81 Punkte)
+const geo = document.getElementById("geo");
+const count = 81;
+const radius = 160;
 
-    const files = [
-        "tmp.po.raer.tmp",
-        "operator.tmp",
-        "ai.farb.map.tmp",
-        "golden.core.tmp",
-        "ort.home.tmp",
-        "home.ort.tmp",
-        "NC²□.sync",
-        "Visualizer.html",
-        "Meta-Drift.html",
-        "API.raw",
-        "API.room",
-        "API-6E→6D.tech-Engine.html",
-        "API-Fusion-Matrix.html",
-        "API-Meta-Drift-Monitor6D.html",
-        "API-NC²□.sync-Visualizer.html",
-        "sqrt.room",
-        "WHIRL.json",
-        "REAL.json"
-    ];
+for(let i=0; i<count; i++){
+    const dot = document.createElement("div");
+    dot.className = "dot";
 
-    let status = "=== FILE CHECK ===\n";
+    const angle = (i / count) * Math.PI * 2;
+    const x = Math.cos(angle) * radius + 180 - 6;
+    const y = Math.sin(angle) * radius + 180 - 6;
 
-    for(const f of files){
-        const ok = await fetch(f).then(r => r.ok).catch(() => false);
-        status += `${f} → ${ok ? "OK" : "FEHLT"}\n`;
-    }
+    dot.style.left = x + "px";
+    dot.style.top = y + "px";
 
-    status += "\n=== MODULE CHECK ===\n";
-
-    const modules = {
-        "NC": NC,
-        "Matrix": Matrix,
-        "ORT": ORT,
-        "HOME": HOME,
-        "Delta": Delta,
-        "Stabil": Stabil,
-        "RESPO": RESPO,
-        "API": API,
-        "SQRT": SQRT
-    };
-
-    for(const m in modules){
-        status += `${m} → ${typeof modules[m] !== "undefined" ? "OK" : "FEHLT"}\n`;
-    }
-
-    status += "\n=== MASTER EXECUTION ===\n";
-
-    try {
-
-        // NC Kern
-        NC.load("tmp.po.raer.tmp");
-        NC.load("operator.tmp");
-        NC.load("ai.farb.map.tmp");
-        NC.load("golden.core.tmp");
-
-        // Lage
-        NC.load("ort.home.tmp");
-        NC.load("home.ort.tmp");
-
-        // Matrix
-        Matrix.init(9, 9);
-
-        // ORT / HOME
-        ORT.scan("ort.home.tmp");
-        HOME.center("home.ort.tmp");
-
-        // Delta / Stabil
-        Delta.compute(ORT.value, HOME.value);
-        Stabil.compute(Delta.value, HOME.phi);
-
-        // RESPO
-        RESPO.lage("ort.home.tmp");
-
-        // API Engines
-        API.load("API.raw");
-        API.load("API.room");
-        API.load("API.system.js");
-
-        // SQRT / RUN8
-        SQRT.run("sqrt.room");
-
-        status += "MASTER → erfolgreich ausgeführt ✓\n";
-
-    } catch(e){
-        status += "MASTER → FEHLER ✗\n";
-        status += e.toString() + "\n";
-    }
-
-    document.getElementById("masterStatus").innerText = status;
-
-})();
+    geo.appendChild(dot);
+}
 </script>
 
 </body>
