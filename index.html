@@ -2,79 +2,84 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>WHIRL · NC²□ · GEO‑ID · 81‑Vektor</title>
+<title>WHIRL · Spin · 6D</title>
 
 <style>
-body { background:#000; color:#0f0; font-family:monospace; padding:40px; }
-h1 { color:#6cf; margin-bottom:30px; }
-
-#geo {
-    width: 360px;
-    height: 360px;
-    margin: 40px auto;
-    border: 3px solid #6cf;
-    border-radius: 50%;
-    position: relative;
-    animation: spin 9s linear infinite;
-}
-
-.dot {
-    width: 12px;
-    height: 12px;
-    background:#0f0;
-    border-radius:50%;
-    position:absolute;
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
-}
-
-pre {
-    background:#111;
-    padding:20px;
-    border-left:3px solid #6cf;
-    white-space:pre-wrap;
-}
+body { background:#000; color:#0ff; font-family:Consolas; padding:20px; }
+h1 { color:#6cf; }
+h2 { color:#0f0; margin-top:30px; }
+pre { background:#111; padding:12px; border:1px solid #333; border-radius:6px; }
+a { color:#6cf; }
 </style>
+
+<script type="module">
+import { WHIRL_POOL } from "./WHIRL_POOL.js";
+import { WHIRL_CORE } from "./WHIRL_CORE.js";
+import { WHIRL_QUADRAT } from "./WHIRL_QUADRAT.js";
+import { WHIRL_VEC } from "./WHIRL_VEC.js";
+import { WHIRL_SCAN } from "./WHIRL_SCAN.js";
+import { WHIRL_META } from "./WHIRL_META.js";
+import { WHIRL_API } from "./WHIRL_API.js";
+
+async function start() {
+
+    const pool = await WHIRL_POOL.load();
+    const core = WHIRL_CORE.spin(pool);
+    const quadrat = WHIRL_QUADRAT.live(pool);
+    const vec = WHIRL_VEC.compute(quadrat);
+    const scan = WHIRL_SCAN.scan(pool);
+    const drift = WHIRL_META.drift(pool);
+    const api = WHIRL_API.fuse(pool);
+
+    document.getElementById("pool").textContent =
+        JSON.stringify(pool, null, 2);
+
+    document.getElementById("core").textContent =
+        JSON.stringify(core, null, 2);
+
+    document.getElementById("quadrat").textContent =
+        JSON.stringify(quadrat, null, 2);
+
+    document.getElementById("vec").textContent =
+        JSON.stringify(vec, null, 2);
+
+    document.getElementById("scan").textContent =
+        JSON.stringify(scan, null, 2);
+
+    document.getElementById("drift").textContent =
+        JSON.stringify(drift, null, 2);
+
+    document.getElementById("api").textContent =
+        JSON.stringify(api, null, 2);
+}
+</script>
 
 </head>
 
-<body>
+<body onload="start()">
 
-<h1>WHIRL · GEO‑ID · 81‑Vektor‑Rotation</h1>
+<h1>WHIRL · Spin · 6D</h1>
 
-<div id="geo"></div>
+<h2>WHIRL-Pool</h2>
+<pre id="pool">Lade…</pre>
 
-<pre>
-GEO‑ID: WHIRL‑Vektor
-Form: 9×9 Rotation
-Felder: 81
-Typ: NC²□ Drift‑Geometrie
-Funktion: Erkennungs‑Bewegung / ID‑Stempel
-</pre>
+<h2>WHIRL-Core</h2>
+<pre id="core">Lade…</pre>
 
-<script>
-// WHIRL als Vektor (81 Punkte)
-const geo = document.getElementById("geo");
-const count = 81;
-const radius = 160;
+<h2>WHIRL-Quadrat</h2>
+<pre id="quadrat">Lade…</pre>
 
-for(let i=0; i<count; i++){
-    const dot = document.createElement("div");
-    dot.className = "dot";
+<h2>WHIRL-VEC</h2>
+<pre id="vec">Lade…</pre>
 
-    const angle = (i / count) * Math.PI * 2;
-    const x = Math.cos(angle) * radius + 180 - 6;
-    const y = Math.sin(angle) * radius + 180 - 6;
+<h2>WHIRL-Scan</h2>
+<pre id="scan">Lade…</pre>
 
-    dot.style.left = x + "px";
-    dot.style.top = y + "px";
+<h2>WHIRL-Meta-Drift</h2>
+<pre id="drift">Lade…</pre>
 
-    geo.appendChild(dot);
-}
-</script>
+<h2>WHIRL-API</h2>
+<pre id="api">Lade…</pre>
 
 </body>
 </html>
