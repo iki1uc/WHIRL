@@ -1,16 +1,12 @@
-export const WHIRL_CORE = {
+export function WHIRL_CORE(v, t){
+    const w = Math.sin(v.x + v.y + v.z + t * 0.33);
 
-    spin(pool) {
-        return {
-            mode: "WHIRL-6D",
-            whirl: pool.WHIRL,
-            respo: pool.RESPO,
-            geo: pool.GEO,
-            modi: pool.MODI,
-            nc: pool.NC,
-            api: pool.API,
-            id: pool.ID,
-            effect: "SPIN-STABILISATION"
-        };
-    }
-};
+    return {
+        S1: w * 0.5,
+        S2: w * 0.75,
+        S3: w * 1.25,
+        S4: (v.x + v.y + v.z) * w,
+        core: w,
+        seq: [w, w*2, w*3, w*4]
+    };
+}
