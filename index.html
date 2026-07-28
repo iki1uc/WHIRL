@@ -2,72 +2,71 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>WHIRL · Spin · 6D</title>
+<title>IKI1UC · WHIRL · Pipeline</title>
 
 <style>
 body { background:#000; color:#0ff; font-family:Consolas; padding:20px; }
 h1 { color:#6cf; }
 h2 { color:#0f0; margin-top:30px; }
 pre { background:#111; padding:12px; border:1px solid #333; border-radius:6px; }
-a { color:#6cf; }
+#input { width:400px; padding:10px; background:#111; color:#0f0; border:1px solid #333; }
 </style>
 
 <script type="module">
+
 import { WHIRL_POOL } from "./WHIRL_POOL.js";
 import { WHIRL_CORE } from "./WHIRL_CORE.js";
-import { WHIRL_QUADRAT } from "./WHIRL_QUADRAT.js";
 import { WHIRL_VEC } from "./WHIRL_VEC.js";
 import { WHIRL_SCAN } from "./WHIRL_SCAN.js";
 import { WHIRL_META } from "./WHIRL_META.js";
 import { WHIRL_API } from "./WHIRL_API.js";
 
+import { PIPELINE_LOAD } from "./boot.room";
+
 async function start() {
 
     const pool = await WHIRL_POOL.load();
     const core = WHIRL_CORE.spin(pool);
-    const quadrat = WHIRL_QUADRAT.live(pool);
-    const vec = WHIRL_VEC.compute(quadrat);
+    const vec = WHIRL_VEC.compute(pool);
     const scan = WHIRL_SCAN.scan(pool);
     const drift = WHIRL_META.drift(pool);
     const api = WHIRL_API.fuse(pool);
 
-    document.getElementById("pool").textContent =
-        JSON.stringify(pool, null, 2);
-
-    document.getElementById("core").textContent =
-        JSON.stringify(core, null, 2);
-
-    document.getElementById("quadrat").textContent =
-        JSON.stringify(quadrat, null, 2);
-
-    document.getElementById("vec").textContent =
-        JSON.stringify(vec, null, 2);
-
-    document.getElementById("scan").textContent =
-        JSON.stringify(scan, null, 2);
-
-    document.getElementById("drift").textContent =
-        JSON.stringify(drift, null, 2);
-
-    document.getElementById("api").textContent =
-        JSON.stringify(api, null, 2);
+    document.getElementById("pool").textContent = JSON.stringify(pool, null, 2);
+    document.getElementById("core").textContent = JSON.stringify(core, null, 2);
+    document.getElementById("vec").textContent = JSON.stringify(vec, null, 2);
+    document.getElementById("scan").textContent = JSON.stringify(scan, null, 2);
+    document.getElementById("drift").textContent = JSON.stringify(drift, null, 2);
+    document.getElementById("api").textContent = JSON.stringify(api, null, 2);
 }
+
+document.addEventListener("keydown", e => {
+    if(e.key === "Enter"){
+        const text = document.getElementById("input").value;
+        const out = PIPELINE_LOAD(text);
+        document.getElementById("pipeline").textContent = JSON.stringify(out, null, 2);
+    }
+});
+
 </script>
 
 </head>
 
 <body onload="start()">
 
-<h1>WHIRL · Spin · 6D</h1>
+<h1>IKI1UC · WHIRL · Pipeline</h1>
+
+<h2>Input</h2>
+<input id="input" placeholder="ENTER → Pipeline Load">
+
+<h2>Pipeline Output</h2>
+<pre id="pipeline">Warte…</pre>
 
 <h2>WHIRL-Pool</h2>
 <pre id="pool">Lade…</pre>
 
 <h2>WHIRL-Core</h2>
 <pre id="core">Lade…</pre>
-
-<h2>WHIRL-Quadrat</h2>
-<pre id="quadrat">Lade…</pre>
 
 <h2>WHIRL-VEC</h2>
 <pre id="vec">Lade…</pre>
