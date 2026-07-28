@@ -1,0 +1,8 @@
+﻿Alter WHIRL_CORE,Neuer WHIRL_CORE
+dreht Pool‑Daten,erzeugt echte Sequenzen
+keine Achsen,B/H/T‑Achsen
+keine Tiefe,S4 → WARB
+keine Breite,seq → KANAL
+kein Drift,core → NC.link
+kein PQ‑Trigger,PQ_HOOK möglich
+kein VECTOR‑Einfluss,VECTOR_Whirl möglich
