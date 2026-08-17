@@ -1,8 +1,42 @@
 window.ID_UNIT = {
+    // ALT
     mode: "sqrt",        // KI‑Modus
     level: 3,            // Funktionsstufe
     vector: true,        // ID liefert Funktionsfluss
+
+    // ALT
     info() {
         return "ID‑Einheit aktiv · SQRT‑Modus";
+    },
+
+    // NEU — WHIRL Runtime
+    whirl: true,         // WHIRL aktiviert
+    cause: 3,            // CAUSE‑Startstufe
+    causeCascade: [3, 9, 27, 81],   // deine 3‑9‑27‑81‑Kaskade
+
+    nextCause() {
+        const i = this.causeCascade.indexOf(this.cause);
+        return this.causeCascade[i + 1] || this.cause;
+    },
+
+    // NEU — WIND (×4)
+    wind() {
+        return this.cause * 4;
+    },
+
+    // NEU — ZOOOG (1.333×)
+    zooog() {
+        return this.cause * 1.333;
+    },
+
+    // NEU — WHIRLCAUSEWIND
+    whrlcausewind() {
+        return {
+            cause: this.cause,
+            next: this.nextCause(),
+            wind: this.wind(),
+            zooog: this.zooog(),
+            status: "WHIRLCAUSEWIND-ACTIVE"
+        };
     }
 };
