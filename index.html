@@ -2,83 +2,651 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>IKI1UC · WHIRL · Pipeline</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WHIRL · 9×9 · RESPO-Launcher · CAUSE/WIND · ZOOOG</title>
 
 <style>
-body { background:#000; color:#0ff; font-family:Consolas; padding:20px; }
-h1 { color:#6cf; }
-h2 { color:#0f0; margin-top:30px; }
-pre { background:#111; padding:12px; border:1px solid #333; border-radius:6px; }
-#input { width:400px; padding:10px; background:#111; color:#0f0; border:1px solid #333; }
-</style>
-
-<script type="module">
-
-import { WHIRL_POOL } from "./WHIRL_POOL.js";
-import { WHIRL_CORE } from "./WHIRL_CORE.js";
-import { WHIRL_VEC } from "./WHIRL_VEC.js";
-import { WHIRL_SCAN } from "./WHIRL_SCAN.js";
-import { WHIRL_META } from "./WHIRL_META.js";
-import { WHIRL_API } from "./WHIRL_API.js";
-
-import { PIPELINE_LOAD } from "./boot.room";
-
-async function start() {
-
-    const pool = await WHIRL_POOL.load();
-    const core = WHIRL_CORE.spin(pool);
-    const vec = WHIRL_VEC.compute(pool);
-    const scan = WHIRL_SCAN.scan(pool);
-    const drift = WHIRL_META.drift(pool);
-    const api = WHIRL_API.fuse(pool);
-
-    document.getElementById("pool").textContent = JSON.stringify(pool, null, 2);
-    document.getElementById("core").textContent = JSON.stringify(core, null, 2);
-    document.getElementById("vec").textContent = JSON.stringify(vec, null, 2);
-    document.getElementById("scan").textContent = JSON.stringify(scan, null, 2);
-    document.getElementById("drift").textContent = JSON.stringify(drift, null, 2);
-    document.getElementById("api").textContent = JSON.stringify(api, null, 2);
+:root {
+    --bg: #0a0a0f;
+    --fg: #0f0;
+    --gold: #ffd700;
+    --esso: #ff6b6b;
+    --roller: #6bff6b;
+    --kasse: #6b6bff;
+    --door: #ffd93d;
+    --doo: #ff44ff;
+    --shell: #6cf;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Consolas', monospace;
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 6px;
+    padding: 10px;
+    overflow: hidden;
 }
 
-document.addEventListener("keydown", e => {
-    if(e.key === "Enter"){
-        const text = document.getElementById("input").value;
-        const out = PIPELINE_LOAD(text);
-        document.getElementById("pipeline").textContent = JSON.stringify(out, null, 2);
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 6px;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+header h1 {
+    font-size: 16px;
+    color: var(--gold);
+    letter-spacing: 3px;
+}
+header h1 .whirl { color: var(--doo); }
+header h1 .respo { color: var(--esso); }
+header h1 .cause { color: var(--door); }
+#info-bar { font-size: 9px; color: #666; display: flex; gap: 8px; align-items: center; }
+
+main {
+    display: grid;
+    grid-template-columns: 3fr 1.2fr;
+    gap: 6px;
+    height: 100%;
+    min-height: 0;
+}
+
+#canvas-wrap {
+    background: #0a0a0f;
+    border: 1px solid #1a1a2a;
+    border-radius: 10px;
+    padding: 6px;
+    position: relative;
+    overflow: hidden;
+}
+#canvas-wrap canvas {
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    display: block;
+}
+#canvas-overlay {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    font-size: 7px;
+    color: #444;
+    pointer-events: none;
+    background: rgba(0,0,0,0.7);
+    padding: 3px 8px;
+    border-radius: 3px;
+}
+#canvas-overlay .whirl { color: var(--gold); }
+
+#panel {
+    background: #0a0a0f;
+    border: 1px solid #1a1a2a;
+    border-radius: 10px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    overflow-y: auto;
+    max-height: 100%;
+}
+#panel h3 {
+    font-size: 9px;
+    color: #666;
+    border-bottom: 1px solid #1a1a2a;
+    padding-bottom: 3px;
+}
+
+#metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 2px;
+}
+.metric {
+    background: #0e0e1a;
+    border-radius: 3px;
+    padding: 2px 3px;
+    text-align: center;
+    border: 1px solid #1a1a2a;
+}
+.metric .label { color: #666; font-size: 5px; text-transform: uppercase; }
+.metric .value { font-size: 9px; font-weight: bold; }
+.metric.cause .value { color: var(--door); }
+.metric.wind .value { color: var(--esso); }
+.metric.zooog .value { color: var(--doo); }
+.metric.field .value { color: var(--gold); }
+
+#log {
+    flex: 1;
+    overflow-y: auto;
+    font-size: 7px;
+    color: #6a6a8a;
+    line-height: 1.3;
+    min-height: 30px;
+    max-height: 70px;
+    background: #06060a;
+    border-radius: 4px;
+    padding: 3px 5px;
+}
+#log .entry { padding: 1px 0; border-bottom: 1px solid #0a0a12; }
+#log .time { color: #444; }
+#log .msg.whirl { color: var(--gold); }
+#log .msg.cause { color: var(--door); }
+#log .msg.respo { color: var(--esso); }
+
+#controls {
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+}
+button {
+    background: #111;
+    color: var(--fg);
+    border: 1px solid #333;
+    padding: 3px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 8px;
+    transition: all 0.2s;
+}
+button:hover { background: #1a1a2a; border-color: var(--gold); }
+button:active { transform: scale(0.95); }
+button.primary { border-color: var(--gold); color: var(--gold); }
+button.primary:hover { background: var(--gold); color: #000; }
+button.cause { border-color: var(--door); color: var(--door); }
+button.cause:hover { background: var(--door); color: #000; }
+button.wind { border-color: var(--esso); color: var(--esso); }
+button.wind:hover { background: var(--esso); color: #000; }
+button.whirl { border-color: var(--doo); color: var(--doo); }
+button.whirl:hover { background: var(--doo); color: #000; }
+button.danger { border-color: #f44; color: #f44; }
+button.danger:hover { background: #f44; color: #000; }
+
+@media (max-width: 800px) {
+    main { grid-template-columns: 1fr; }
+    #panel { max-height: 180px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>
+        <span class="whirl">🌀 WHIRL</span>
+        <span style="color:#666;">·</span>
+        <span class="respo">◈ RESPO</span>
+        <span style="color:#666;">·</span>
+        <span class="cause">⚡ 9×9</span>
+    </h1>
+    <div id="info-bar">
+        <span id="clock">⏱️ --:--:--</span>
+        <span id="state-display" style="color:var(--gold);">● bereit</span>
+        <span id="cycle-display" style="color:#666;">WHIRL 0</span>
+    </div>
+</header>
+
+<main>
+    <div id="canvas-wrap">
+        <canvas id="whirlCanvas"></canvas>
+        <div id="canvas-overlay">
+            <span class="whirl">🌀</span> WHIRL · 81 Felder · CAUSE/WIND/ZOOOG
+        </div>
+    </div>
+
+    <div id="panel">
+        <h3>🌀 WHIRL · 9×9 · RESPO</h3>
+
+        <div id="metrics">
+            <div class="metric cause"><div class="label">CAUSE</div><div class="value" id="cause-value">3</div></div>
+            <div class="metric wind"><div class="label">WIND</div><div class="value" id="wind-value">0</div></div>
+            <div class="metric zooog"><div class="label">ZOOOG</div><div class="value" id="zooog-value">0</div></div>
+            <div class="metric field"><div class="label">FELD</div><div class="value" id="field-value">0/81</div></div>
+        </div>
+
+        <div id="log">
+            <div class="entry"><span class="time">[INIT]</span> <span class="msg whirl">🌀 WHIRL · 9×9 · RESPO-Launcher</span></div>
+            <div class="entry"><span class="time">[INIT]</span> <span class="msg cause">CAUSE: 3 → 9 → 27 → 81</span></div>
+            <div class="entry"><span class="time">[INIT]</span> <span class="msg respo">17 RESPO-Module geladen</span></div>
+        </div>
+
+        <div id="controls">
+            <button class="primary" id="btn-start">▶ START</button>
+            <button class="cause" id="btn-cause">⚡ CAUSE</button>
+            <button class="wind" id="btn-wind">💨 WIND</button>
+            <button class="whirl" id="btn-whirl">🌀 WHIRL</button>
+            <button class="danger" id="btn-reset">⟲ RESET</button>
+            <button id="btn-auto">▶ AUTO</button>
+        </div>
+    </div>
+</main>
+
+<script>
+// ============================================================
+// WHIRL · 9×9 · RESPO-Launcher · CAUSE/WIND/ZOOOG
+// ============================================================
+
+// --- KONSTANTEN ---
+var CAUSE_CASCADE = [3, 9, 27, 81];
+var RESPO_MODULES = [
+    'RESPOx', 'RESPO_ARG_SCAN', 'RESPO_UI_STATUS', 'RESPO-MULTI-NORM',
+    'RESPO-Code-Pipeline', 'RESPO', 'RESPO-Beam-Point', 'RESPO.Ort-LAGE',
+    'RESPO-Station', 'RESPO-Name', 'RESPO_MODUL_LOOP', 'respo-scan-hub.app',
+    'RESPO_CORE_ROUTER', 'Respo-Rotation', 'respo-ghost-bridge.cloud',
+    'RESPO_MOTION_PRIME', 'RESPO_POSITION_USER'
+];
+
+// --- WHIRL-POOL ---
+var WHIRL_POOL = {
+    causeLevel: 3,
+    windLevel: 12,
+    zooogBoost: 'ZOOOG!',
+    whrlcausewind: false,
+    fields: 81,
+    currentField: 0,
+    modules: RESPO_MODULES
+};
+
+// ============================================================
+// CANVAS SETUP
+// ============================================================
+var canvas = document.getElementById('whirlCanvas');
+var ctx = canvas.getContext('2d');
+var W, H, cx, cy, radius;
+
+function resizeCanvas() {
+    var wrap = document.getElementById('canvas-wrap');
+    var rect = wrap.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    W = canvas.width;
+    H = canvas.height;
+    cx = W / 2;
+    cy = H / 2;
+    radius = Math.min(W, H) * 0.38;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+// ============================================================
+// STATE
+// ============================================================
+var state = {
+    running: false,
+    autoMode: false,
+    cycle: 0,
+    t: 0,
+    causeLevel: 3,
+    windLevel: 12,
+    zooogBoost: 1.333,
+    whrlcausewind: false,
+    currentField: 0,
+    fields: 81,
+    direction: 1,
+    respoModules: RESPO_MODULES
+};
+
+// ============================================================
+// LOG
+// ============================================================
+function log(msg, type) {
+    var logDiv = document.getElementById('log');
+    var entry = document.createElement('div');
+    entry.className = 'entry';
+    var time = new Date().toLocaleTimeString();
+    var cls = type === 'whirl' ? 'whirl' : type === 'cause' ? 'cause' : type === 'respo' ? 'respo' : '';
+    entry.innerHTML = '<span class="time">[' + time + ']</span> <span class="msg ' + cls + '">' + msg + '</span>';
+    logDiv.appendChild(entry);
+    logDiv.scrollTop = logDiv.scrollHeight;
+    while (logDiv.children.length > 50) logDiv.removeChild(logDiv.firstChild);
+}
+
+// ============================================================
+// WHIRL KERN
+// ============================================================
+
+function nextCause(level) {
+    var idx = CAUSE_CASCADE.indexOf(level);
+    return CAUSE_CASCADE[(idx + 1) % CAUSE_CASCADE.length] || level;
+}
+
+function whirlSpin() {
+    var t = state.t;
+    var cause = state.causeLevel;
+    var wind = cause * 4;
+    var zooog = cause * 1.333;
+
+    // WHIRL-Vektor
+    var vx = Math.sin(t * 0.3) * cause * 0.5;
+    var vy = Math.cos(t * 0.25) * cause * 0.5;
+    var vz = Math.sin(t * 0.2) * cause * 0.3;
+
+    // WHIRLCAUSEWIND
+    var whrlcausewind = {
+        x: vx * wind,
+        y: vy * wind,
+        lvl: nextCause(cause)
+    };
+
+    // Feld aktualisieren
+    state.currentField = (state.currentField + state.direction) % state.fields;
+
+    // Module-Update
+    var moduleIndex = state.currentField % state.respoModules.length;
+    var activeModule = state.respoModules[moduleIndex];
+
+    // Metriken
+    document.getElementById('cause-value').textContent = cause;
+    document.getElementById('wind-value').textContent = wind.toFixed(0);
+    document.getElementById('zooog-value').textContent = zooog.toFixed(1);
+    document.getElementById('field-value').textContent = state.currentField + '/' + state.fields;
+
+    // Log ab und zu
+    if (state.cycle % 20 === 0) {
+        log('🌀 Feld ' + state.currentField + ' → ' + activeModule, 'respo');
     }
+
+    return { vx, vy, vz, whrlcausewind, activeModule, wind, zooog };
+}
+
+function causeStep() {
+    state.causeLevel = nextCause(state.causeLevel);
+    log('⚡ CAUSE: ' + state.causeLevel, 'cause');
+}
+
+function windBoost() {
+    state.windLevel = state.causeLevel * 4;
+    log('💨 WIND: ×' + state.windLevel, 'cause');
+}
+
+function zooogBoost() {
+    var boost = state.causeLevel * 1.333;
+    log('🔊 ZOOOG: ' + boost.toFixed(1) + '×', 'whirl');
+    return boost;
+}
+
+// ============================================================
+// RENDER — WHIRL · 81 FELDER
+// ============================================================
+function render() {
+    ctx.clearRect(0, 0, W, H);
+
+    var grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, W * 0.6);
+    grad.addColorStop(0, '#0a0a1a');
+    grad.addColorStop(1, '#000');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    drawWhirlRing();
+    drawFields();
+    drawCenter();
+    drawCauseCascade();
+
+    state.t += 0.008;
+    if (state.running) {
+        state.cycle++;
+        whirlSpin();
+        if (state.cycle % 60 === 0) causeStep();
+        if (state.cycle % 30 === 0) windBoost();
+        document.getElementById('cycle-display').textContent = 'WHIRL ' + state.cycle;
+    }
+
+    requestAnimationFrame(render);
+}
+render();
+
+// ============================================================
+// ZEICHEN-FUNKTIONEN
+// ============================================================
+
+function drawWhirlRing() {
+    var r = radius * 0.7;
+    var n = 9;
+
+    // Äußerer Ring
+    ctx.strokeStyle = 'rgba(255,215,61,0.04)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 4]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 9 Felder auf dem Ring (9×9 = 81)
+    for (var i = 0; i < n; i++) {
+        var angle = (i / n) * Math.PI * 2 + state.t * 0.02;
+        var x = cx + Math.cos(angle) * r;
+        var y = cy + Math.sin(angle) * r;
+        var isActive = i === Math.floor(state.currentField / 9);
+
+        ctx.fillStyle = isActive ? 'rgba(255,215,61,0.15)' : 'rgba(255,255,255,0.01)';
+        ctx.shadowColor = isActive ? '#ffd700' : 'transparent';
+        ctx.shadowBlur = isActive ? 15 : 0;
+        ctx.beginPath();
+        ctx.arc(x, y, isActive ? 8 : 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle = isActive ? '#ffd700' : '#333';
+        ctx.font = isActive ? '7px Consolas' : '5px Consolas';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(i + 1, x, y - 10);
+    }
+
+    // 81-Label
+    ctx.fillStyle = 'rgba(255,215,61,0.03)';
+    ctx.font = '6px Consolas';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('81 FELDER', cx, cy + r + 10);
+}
+
+function drawFields() {
+    var size = 9;
+    var spacing = radius * 0.055;
+    var offset = (size - 1) * spacing / 2;
+
+    for (var row = 0; row < size; row++) {
+        for (var col = 0; col < size; col++) {
+            var idx = row * size + col;
+            var x = cx - offset + col * spacing;
+            var y = cy - offset + row * spacing;
+            var isActive = idx === state.currentField;
+            var dist = Math.sqrt(Math.pow(col - 4, 2) + Math.pow(row - 4, 2));
+
+            var alpha = isActive ? 0.4 : 0.02 + (1 - dist / 6) * 0.04;
+            ctx.fillStyle = isActive ? 'rgba(255,215,61,' + alpha + ')' : 'rgba(255,255,255,' + alpha + ')';
+            ctx.shadowColor = isActive ? '#ffd700' : 'transparent';
+            ctx.shadowBlur = isActive ? 10 : 0;
+            ctx.fillRect(x - 2, y - 2, 4, 4);
+            ctx.shadowBlur = 0;
+
+            if (isActive) {
+                ctx.strokeStyle = 'rgba(255,215,61,0.2)';
+                ctx.lineWidth = 0.5;
+                ctx.strokeRect(x - 3, y - 3, 6, 6);
+            }
+        }
+    }
+
+    // Aktives Modul
+    var moduleIndex = state.currentField % state.respoModules.length;
+    ctx.fillStyle = 'rgba(255,215,61,0.05)';
+    ctx.font = '5px Consolas';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(state.respoModules[moduleIndex] || '—', cx, cy - radius * 0.65);
+}
+
+function drawCenter() {
+    var r = radius * 0.08 + state.causeLevel * 2;
+
+    // Glow
+    var glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, r + 20);
+    glow.addColorStop(0, 'rgba(255,215,61,0.15)');
+    glow.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 20, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Zentrum
+    ctx.fillStyle = '#ffd700';
+    ctx.shadowColor = '#ffd700';
+    ctx.shadowBlur = 20;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // WHIRL-Symbol
+    ctx.fillStyle = '#000';
+    ctx.font = 'bold 12px Consolas';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('🌀', cx, cy + 1);
+
+    // WHIRL-Label
+    ctx.fillStyle = 'rgba(255,255,255,0.05)';
+    ctx.font = '5px Consolas';
+    ctx.textBaseline = 'top';
+    ctx.fillText('WHIRL', cx, cy + r + 6);
+}
+
+function drawCauseCascade() {
+    var levels = CAUSE_CASCADE;
+    var colors = ['#ff6b6b', '#6bff6b', '#6b6bff', '#ffd93d'];
+
+    ctx.fillStyle = 'rgba(255,255,255,0.02)';
+    ctx.fillRect(W - 130, 8, 122, 22);
+
+    for (var i = 0; i < levels.length; i++) {
+        var x = W - 126 + i * 28;
+        var isActive = levels[i] === state.causeLevel;
+        ctx.fillStyle = isActive ? colors[i] : '#222';
+        ctx.fillRect(x, 10, 20, 16);
+        ctx.fillStyle = isActive ? '#000' : '#444';
+        ctx.font = '6px Consolas';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(levels[i], x + 10, 18);
+    }
+
+    ctx.fillStyle = 'rgba(255,255,255,0.02)';
+    ctx.font = '4px Consolas';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('CAUSE', W - 126, 28);
+}
+
+// ============================================================
+// CONTROLS
+// ============================================================
+document.getElementById('btn-start').onclick = function() {
+    state.running = !state.running;
+    this.textContent = state.running ? '⏸ STOP' : '▶ START';
+    document.getElementById('state-display').textContent = state.running ? '● läuft' : '● gestoppt';
+    document.getElementById('state-display').style.color = state.running ? 'var(--gold)' : '#666';
+    log(state.running ? '▶ WHIRL gestartet' : '⏸ WHIRL gestoppt', 'whirl');
+};
+
+document.getElementById('btn-cause').onclick = function() {
+    causeStep();
+    log('⚡ CAUSE: ' + state.causeLevel, 'cause');
+};
+
+document.getElementById('btn-wind').onclick = function() {
+    windBoost();
+    log('💨 WIND: ×' + state.windLevel, 'cause');
+};
+
+document.getElementById('btn-whirl').onclick = function() {
+    var result = whirlSpin();
+    log('🌀 WHIRL: Feld ' + state.currentField + ' → ' + result.activeModule, 'whirl');
+};
+
+document.getElementById('btn-reset').onclick = function() {
+    state.running = false;
+    state.cycle = 0;
+    state.t = 0;
+    state.causeLevel = 3;
+    state.windLevel = 12;
+    state.currentField = 0;
+    document.getElementById('btn-start').textContent = '▶ START';
+    document.getElementById('state-display').textContent = '● reset';
+    document.getElementById('state-display').style.color = '#f44';
+    document.getElementById('cycle-display').textContent = 'WHIRL 0';
+    document.getElementById('cause-value').textContent = '3';
+    document.getElementById('wind-value').textContent = '0';
+    document.getElementById('zooog-value').textContent = '0';
+    document.getElementById('field-value').textContent = '0/81';
+    log('⟲ RESET — WHIRL zurückgesetzt', 'whirl');
+};
+
+document.getElementById('btn-auto').onclick = function() {
+    state.autoMode = !state.autoMode;
+    this.textContent = state.autoMode ? '⏸ PAUSE' : '▶ AUTO';
+    if (state.autoMode) {
+        state.running = true;
+        document.getElementById('btn-start').textContent = '⏸ STOP';
+        document.getElementById('state-display').textContent = '● auto';
+        document.getElementById('state-display').style.color = 'var(--gold)';
+        if (window.autoInterval) clearInterval(window.autoInterval);
+        window.autoInterval = setInterval(function() {
+            var idx = Math.floor(Math.random() * 4);
+            if (idx === 0) causeStep();
+            else if (idx === 1) windBoost();
+            else { var r = whirlSpin(); log('🌀 ' + r.activeModule, 'whirl'); }
+        }, 2000);
+        log('▶ AUTO · WHIRL rotiert', 'whirl');
+    } else {
+        clearInterval(window.autoInterval);
+        log('⏸ AUTO pausiert', 'whirl');
+    }
+};
+
+// ============================================================
+// TASTATUR
+// ============================================================
+document.addEventListener('keydown', function(e) {
+    if (e.key === ' ') { e.preventDefault(); document.getElementById('btn-start').click(); }
+    if (e.key === 'c') document.getElementById('btn-cause').click();
+    if (e.key === 'w') document.getElementById('btn-wind').click();
+    if (e.key === 'h') document.getElementById('btn-whirl').click();
+    if (e.key === 'x') document.getElementById('btn-reset').click();
+    if (e.key === 'a') document.getElementById('btn-auto').click();
 });
 
+// ============================================================
+// UHR
+// ============================================================
+function updateClock() {
+    document.getElementById('clock').textContent = '⏱️ ' + new Date().toLocaleTimeString();
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ============================================================
+// INIT
+// ============================================================
+log('🌀 WHIRL · 9×9 · RESPO-Launcher', 'whirl');
+log('⚡ CAUSE: 3 → 9 → 27 → 81', 'cause');
+log('📦 17 RESPO-Module geladen', 'respo');
+log('⌨️  c=Cause  w=Wind  h=Whirl  x=Reset  a=Auto', 'whirl');
+
+setTimeout(function() {
+    state.running = true;
+    document.getElementById('btn-start').textContent = '⏸ STOP';
+    document.getElementById('state-display').textContent = '● läuft';
+    document.getElementById('state-display').style.color = 'var(--gold)';
+    log('▶ WHIRL automatisch gestartet', 'whirl');
+}, 500);
 </script>
-
-</head>
-
-<body onload="start()">
-
-<h1>IKI1UC · WHIRL · Pipeline</h1>
-
-<h2>Input</h2>
-<input id="input" placeholder="ENTER → Pipeline Load">
-
-<h2>Pipeline Output</h2>
-<pre id="pipeline">Warte…</pre>
-
-<h2>WHIRL-Pool</h2>
-<pre id="pool">Lade…</pre>
-
-<h2>WHIRL-Core</h2>
-<pre id="core">Lade…</pre>
-
-<h2>WHIRL-VEC</h2>
-<pre id="vec">Lade…</pre>
-
-<h2>WHIRL-Scan</h2>
-<pre id="scan">Lade…</pre>
-
-<h2>WHIRL-Meta-Drift</h2>
-<pre id="drift">Lade…</pre>
-
-<h2>WHIRL-API</h2>
-<pre id="api">Lade…</pre>
-
 </body>
 </html>
