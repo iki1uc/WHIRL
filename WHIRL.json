@@ -6,6 +6,11 @@
   "cycle": "clockwise",
   "speed": "medium",
 
+  "causeCascade": [3, 9, 27, 81],
+  "windLevel": 12,
+  "zooogBoost": "ZOOOG!",
+  "whrlcausewind": false,
+
   "routes": {
     "1": "RESPOx",
     "2": "RESPO_ARG_SCAN",
@@ -16,7 +21,6 @@
     "7": "RESPO-Beam-Point",
     "8": "RESPO.Ort-LAGE",
     "9": "RESPO-Station",
-
     "10": "RESPO-Name",
     "11": "RESPO_MODUL_LOOP",
     "12": "respo-scan-hub.app",
@@ -25,7 +29,6 @@
     "15": "respo-ghost-bridge.cloud",
     "16": "RESPO_MOTION_PRIME",
     "17": "RESPO_POSITION_USER",
-
     "18": "RESPOx",
     "19": "RESPO_ARG_SCAN",
     "20": "RESPO_UI_STATUS",
@@ -35,7 +38,6 @@
     "24": "RESPO-Beam-Point",
     "25": "RESPO.Ort-LAGE",
     "26": "RESPO-Station",
-
     "27": "RESPO-Name",
     "28": "RESPO_MODUL_LOOP",
     "29": "respo-scan-hub.app",
@@ -44,7 +46,6 @@
     "32": "respo-ghost-bridge.cloud",
     "33": "RESPO_MOTION_PRIME",
     "34": "RESPO_POSITION_USER",
-
     "35": "RESPOx",
     "36": "RESPO_ARG_SCAN",
     "37": "RESPO_UI_STATUS",
@@ -54,7 +55,6 @@
     "41": "RESPO-Beam-Point",
     "42": "RESPO.Ort-LAGE",
     "43": "RESPO-Station",
-
     "44": "RESPO-Name",
     "45": "RESPO_MODUL_LOOP",
     "46": "respo-scan-hub.app",
@@ -63,7 +63,6 @@
     "49": "respo-ghost-bridge.cloud",
     "50": "RESPO_MOTION_PRIME",
     "51": "RESPO_POSITION_USER",
-
     "52": "RESPOx",
     "53": "RESPO_ARG_SCAN",
     "54": "RESPO_UI_STATUS",
@@ -73,7 +72,6 @@
     "58": "RESPO-Beam-Point",
     "59": "RESPO.Ort-LAGE",
     "60": "RESPO-Station",
-
     "61": "RESPO-Name",
     "62": "RESPO_MODUL_LOOP",
     "63": "respo-scan-hub.app",
@@ -82,7 +80,6 @@
     "66": "respo-ghost-bridge.cloud",
     "67": "RESPO_MOTION_PRIME",
     "68": "RESPO_POSITION_USER",
-
     "69": "RESPOx",
     "70": "RESPO_ARG_SCAN",
     "71": "RESPO_UI_STATUS",
